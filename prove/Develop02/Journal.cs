@@ -1,56 +1,90 @@
-// Represents a journal containing a list of entries
-public class Journal
+using System.Collections.Generic;
+public class JournalData
 {
-    private List<Entry> _entries;
 
-    // Constructor to create a journal with an empty list of entries
-    public Journal()
-    {
-        _entries = new List<Entry>();
-    }
+    public string _fileName;
+    public string _fileFormat;
+    public string _format;
+    public string _data;
+    public List<JournalEntry> _entries = new List<JournalEntry>{};
+    //create, save and add if the file exist in the path or
+    //write in that file
 
-    // Adds a new entry to the journal
-    public void AddEntry(Entry entry)
+    public void EntryDisplay()
     {
-        _entries.Add(entry);
-    }
-
-    // Returns the list of entries in the journal
-    public List<Entry> GetEntries()
-    {
-        return _entries;
-    }
-
-    // Saves the journal to a file
-    public void SaveToFile(string filename)
-    {
-        using (StreamWriter outputFile = new StreamWriter(filename))
+        foreach (JournalEntry data in _entries)
         {
-            foreach (var entry in _entries)
+           data.Display();
+        }
+    }
+     public void AddEntry(JournalEntry entries)
+    {
+        _entries.Add(entries);
+
+    }
+
+    public void SaveFile()
+    {
+        Console.Write("What is the file?\n");
+        _fileName = Console.ReadLine();
+        Console.Write("Please enter the file format, CSV or TXT: ");
+        _format = Console.ReadLine().ToLower();
+         if (_format == "txt")
+        {
+            _fileFormat = $"{_fileName}.txt"; //define the format to txt.
+        }
+        else if (_format == "csv")
+        {
+            _fileFormat = $"{_fileName}.csv"; //define the format to csv.
+        }
+
+        using (StreamWriter out_put_file = new StreamWriter(_fileFormat))
+        {
+            foreach (JournalEntry data in _entries)
             {
-                string entryData = $"{entry.GetDate().ToShortDateString()}|{entry.GetPrompt()}|{entry.GetContent()}";
-                outputFile.WriteLine(entryData);
+                out_put_file.WriteLine($"{data.GetEntry()}");
             }
-        }
-    }
 
-    // Loads the journal from a file, replacing any existing entries
-    public void LoadFromFile(string filename)
+        }
+
+    }
+    //load the file and append what is store in the file to the _entry list so it can be display
+    public void LoadFile()
     {
-        _entries.Clear(); // Clears existing entries before loading from file
 
-        string[] lines = File.ReadAllLines(filename);
-
-        foreach (string line in lines)
+        Console.Write("Enter the Name of the file:\n");
+        _fileName = Console.ReadLine();
+        Console.Write("Please enter the file format, CSV or TXT: ");
+        _format = Console.ReadLine().ToLower();
+         if (_format == "txt")
         {
-            string[] parts = line.Split('|');
-
-            Date date = new Date();
-            string prompt = parts[1];
-            string content = parts[2];
-
-            Entry entry = new Entry(date, prompt, content);
-            _entries.Add(entry);
+            _fileFormat = $"{_fileName}.txt"; //load a txt file format.
         }
+        else if (_format == "csv")
+        {
+            _fileFormat = $"{_fileName}.csv"; //load a csv file format.
+        }
+
+        string[] lines = File.ReadAllLines(_fileFormat);// read until the last line of a file and store the content into a variable
+        _entries.Clear(); // clear everything that is in the list before adding something
+        while(lines.Count() > 0)
+        {
+            List<string> content = new List<string>{}; 
+            for(int i = 0; i < 6; i ++)
+            {
+                string [] data= lines[i].Split("-");
+                content.Add(data[1]);
+            }
+            JournalEntry load = new JournalEntry();
+            load.SetEntry( content[0], content[1], content[2], content[3], content[4]);
+            load._date = content[5];
+            lines = lines.Skip(7).ToArray();
+            _entries.Add(load); //load(add) all the data into the list of _entry
+            content.Clear();
+
+        }
+
+
     }
+
 }

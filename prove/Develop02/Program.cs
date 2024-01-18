@@ -1,87 +1,66 @@
+// i added a goal as my extra credit, and it saves the goal in the txt file
+
+
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
-
-
-// Represents a date with a method to get a formatted string
-public class Date
-{
-    public string ToShortDateString()
-    {
-        return DateTime.Now.ToShortDateString();
-    }
-}
-
-
-
-
-
-
-// Main program class
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        // Custom prompts
-        List<string> prompts = new List<string>
-        {
-            "Describe a small act of kindness you witnessed or performed today.",
-            "Reflect on a moment that challenged your perspective or changed your mindset.",
-            "Share an achievement, no matter how small, that made you proud today.",
-            "Explore a goal or aspiration you have for the future and what steps you took today to work towards it.",
-        };
+        // Looks like there are few things missing from the specs. 
+        // In the JournalEntry class you have a list of strings for the entries 
+        // but it should have attributes for the prompt, response and the date.
+        // The JournalData class should have a List of JournalEntry objects with 
+        // functions to add an entry and display all then entries along with the load 
+        // and save functions that you have. All of your classes and functions should use 
+        // Titlee Case so JournalEntry should be JournalEntry.
+        Console.WriteLine("Welcome to the Journal program");
 
-        PromptGenerator promptGenerator = new PromptGenerator(prompts);
-        Journal journal = new Journal();
-
+        JournalEntry storeData = new JournalEntry();
+        PromptGenerator prompting = new PromptGenerator();
+        JournalData fileName1 = new JournalData();
         while (true)
         {
-            Console.WriteLine("1. Write a new entry");
-            Console.WriteLine("2. Display the journal");
-            Console.WriteLine("3. Save the journal to a file");
-            Console.WriteLine("4. Load the journal from a file");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("Please select one of the following:");
+            Console.WriteLine($"1. Write \n2. Display \n3. Load \n4. Save \n5. Quit");
+            Console.Write("What would you like to do? ");  
+            int choice = int.Parse(Console.ReadLine());
 
-            Console.Write("Enter your choice: ");
-            string choice = Console.ReadLine();
-
-            switch (choice)
+            if (choice == 1)
             {
-                case "1":
-                    string randomPrompt = promptGenerator.GeneratePrompt();
-                    Console.WriteLine($"Prompt: {randomPrompt}");
+                if (storeData._count == 0)
+                {
+                    prompting.MoreInfo();
+                }
+                prompting.PromptsDisplay();
+                storeData.SetEntry(prompting._sentence, prompting._prompt, prompting._title, 
+                                prompting._author, prompting._goal);
+                fileName1.AddEntry(storeData);
+            }
+            else if (choice == 2)
+            {
+                fileName1.EntryDisplay();
+            }
+            else if (choice == 3)
+            {
 
-                    Console.Write("Enter your response: ");
-                    string userResponse = Console.ReadLine();
-
-                    Date currentDate = new Date();
-                    Entry newEntry = new Entry(currentDate, randomPrompt, userResponse);
-
-                    journal.AddEntry(newEntry);
-                    break;
-                case "2":
-                    foreach (Entry entry in journal.GetEntries())
-                    {
-                        Console.WriteLine($"Date: {entry.GetDate().ToShortDateString()} - Prompt: {entry.GetPrompt()} - Response: {entry.GetContent()}");
-                    }
-                    break;
-                case "3":
-                    Console.Write("Enter a filename to save the journal: ");
-                    string filenameToSave = Console.ReadLine();
-                    journal.SaveToFile(filenameToSave);
-                    break;
-                case "4":
-                    Console.Write("Enter a filename to load the journal from: ");
-                    string filenameToLoad = Console.ReadLine();
-                    journal.LoadFromFile(filenameToLoad);
-                    break;
-                case "5":
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
+                fileName1.LoadFile();
+            }
+            else if (choice == 4)
+            {
+                prompting.Goals();
+                storeData.SetEntry(prompting._title,prompting._author, prompting._prompt, prompting._sentence, prompting._goal); //call twice to make sure that the goals are saved into the file
+                fileName1.SaveFile();
+            }
+            else if (choice == 5)
+            {
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Sorry, please select one of the numbers display in the menu \n");
             }
         }
     }
