@@ -16,11 +16,18 @@ class Program
         job2._startYear = 2022;
         job2._endYear = 2023;
 
+        Job job3 = new Job();
+        job3._jobTitle = "Chocolate Seller";
+        job3._company = "Willy Wonka";
+        job2._startYear = 2024;
+        job2._endYear = 2027;
+
         Resume myResume = new Resume();
         myResume._name = "Israel Oyeyemi";
 
         myResume._jobs.Add(job1);
         myResume._jobs.Add(job2);
+        myResume._jobs.Add(job3);
 
         myResume.Display();
     }
