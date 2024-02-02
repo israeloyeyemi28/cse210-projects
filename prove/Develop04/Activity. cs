@@ -1,65 +1,91 @@
-using System;
-
 public class Activity
 {
-    // Attributes
-    private string _activityName;
-    private int _activityTime;
-    private string _message = "You may begin in...";
-
-    // Constructors
-    public Activity(string activityName, int activityTime)
+    // protected int _durationInSec;
+    protected string _description;
+    protected string _activityName;
+    protected int _timeSpent;
+    public Activity(){}
+    public Activity(string name, string description, int time = 0)
     {
-        _activityName = activityName;
-        _activityTime = activityTime;
+        _activityName = name;
+        _description = description;
+        _timeSpent = time;
     }
-    public void GetActivityName()
-    {
-        Console.WriteLine($"Welcome to the {_activityName} Activity\n");
-    }
-    public void SetActivityName(string activityName)
-    {
-        _activityName = activityName;
-    }
-    public int GetActivityTime()
-    {
-        Console.Write("\nHow long, in seconds, would you like for your session? ");
-        int userSeconds = Int32.Parse(Console.ReadLine());
-        _activityTime = userSeconds;
-        return userSeconds;
-    }
-    public void SetActivityTime(int activityTime)
-    {
-        _activityTime = activityTime;
-    }
-
-    // Methods
-    public void GetReady()
+    public void GetIntroPrompt()
     {
         Console.Clear();
-        Spinner spinner = new Spinner();
-        spinner.ShowSpinnerReady();
-    }
+        Console.WriteLine($"Welcome to the {_activityName}");
+        Console.WriteLine();
+        Console.WriteLine(_description);
+        Console.WriteLine();
 
-    public void GetDone()
-    {
-        Spinner spinner = new Spinner();
-        spinner.ShowSpinnerDone();
-        Console.WriteLine($"\nYou have completed another {_activityTime} seconds of the {_activityName} Activity!");
-        spinner.ShowSpinner();
+        Console.Write("For how long in second would you like for your session to last? ");
+
+        int duration = int.Parse(Console.ReadLine());
+        _timeSpent = duration;
+
+        Console.Clear();
+
+        Console.WriteLine("Get Ready...");
+        GetSpinnerTimer();
+        Console.WriteLine();
+
     }
-     public void CountDown(int time)
-    {
-        Console.WriteLine();  //insert blank line to start
-        for (int i = time; i > 0; i--)
+    public void GetSpinnerTimer()
+    {   
+        List<string> symbol = new List<string>
+        {"|","/", "-", "\\", "|", "/", "-", "\\"};
+        for (int i = 0; i < symbol.Count() ; i++)
         {
-            Console.Write($"{_message}{i}");
+            Console.Write(symbol[i]);
             Thread.Sleep(1000);
-            string blank = new string('\b', (_message.Length + 5));  // Overwrite line
-            Console.Write(blank);
+            Console.Write("\b \b");
         }
-        Console.WriteLine($"Go:                                  ");  // last prompt
+
+    }
+    public void GetCountDownTimer(int n = 5)
+    {
+        if (_timeSpent >= 10)
+        {
+            for (int i = n; i > 0; i-- )
+            {
+                Console.Write(i);
+                Thread.Sleep(1000);
+                Console.Write("\b \b");
+            }
+        }
+        if (_timeSpent < 10)
+        {
+            for (int i = _timeSpent / 2; i > 0; i-- )
+            {
+                Console.Write(i);
+                Thread.Sleep(1000);
+                Console.Write("\b \b");
+            }
+        }
+    }
+    public void GetClosingMessage()
+    {
+        Console.WriteLine();
+        Console.WriteLine("Well done");
+        GetSpinnerTimer();
+        Console.WriteLine();
+        Console.WriteLine($"You have completed a {_timeSpent} of {_activityName}");
+        GetCountDownTimer();
+        Console.WriteLine();
     }
 
+    public void History(int breathing = 0, int reflection = 0, int Listing = 0)
+    {
+        DateTime CurrentTime = DateTime.Now;
+        using(StreamWriter record = File.AppendText("Mindfulness game.txt"))
+        {
+            record.WriteLine(CurrentTime);
+            record.WriteLine($"  The Breathing activity played: {breathing} times.");
+            record.WriteLine($"  The Reflection activity played: {reflection} times.");
+            record.WriteLine($"  The Listing activity played: {Listing} times.");
+            record.WriteLine();
+        }
+    }
 
 }
