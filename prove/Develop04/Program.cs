@@ -1,69 +1,63 @@
 using System;
-using System.Diagnostics;
 
 class Program
 {
-
     static void Main(string[] args)
     {
-        // This will clear the console
-        Console.Clear();
-        Console.Write("\n*** Welcome to the Mindfulness Program ****\n");
-        //Call Choices
-        Choices choice = new Choices();
-        int seconds;
-
-        int action = 0;
-        while (action != 4)
+        Activity A1 = new Activity();
+        int _nBreathing = 0;
+        int _nReflecting = 0;
+        int _nListing = 0;
+        int choice = 0;
+        while (choice != 4)
         {
-            // Ask for user input (1-4)
-            action = choice.UserChoice();
-            switch (action)
+            Console.Clear();
+            Console.WriteLine("Menu Options: \n   1.Start Breathing Activity \n   2.Start Reflecting Activity \n   3.Start Listing Activity \n   4.Quit");
+            Console.Write("Select your choice from the menu: ");
+            choice = int.Parse(Console.ReadLine());
+            string description = "";
+            string option = "";
+            switch (choice)
             {
                 case 1:
-                    // Start Breathing Activity
-                    Console.Clear();
-                    BreathingActivity breathing = new BreathingActivity("Breathing", 0);
-                    breathing.GetActivityName();
-                    breathing.GetActivityDescription();
-                    seconds = breathing.GetActivityTime();
-                    breathing.GetReady();
-                    breathing.Breathing(seconds);
-                    breathing.GetDone();
+                    option = "Breathing Activity";
+                    description = "This activity will help you relax by walking you through breathing in and out slowly. Clear your mind and focus on your breathing.";
+                    Console.WriteLine();
+                    Breathing b1 = new Breathing(option, description);
+                    b1.GetIntroPrompt();
+                    b1.InAndOut();
+                    b1.GetClosingMessage();
+                    _nBreathing += 1;
                     break;
+
                 case 2:
-                    //Start Reflecting Activity
-                    Console.Clear();
-                    ReflectingActivity reflecting = new ReflectingActivity("Reflecting", 0);
-                    reflecting.GetActivityName();
-                    reflecting.GetActivityDescription();
-                    seconds = reflecting.GetActivityTime();
-                    reflecting.GetReady();
-                    reflecting.ShowPrompt(seconds);
-                    reflecting.GetDone();
+                    option = "Reflecting Activity";
+                    description = "This activity will help you reflect on times on your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other  aspects of your life.";
+                    Console.WriteLine();
+                    Reflection r1 = new Reflection(option, description);
+                    r1.GetIntroPrompt(); 
+                    r1.GetPrompt();
+                    r1.GetQuestion();
+                    r1.GetClosingMessage();
+                    _nReflecting += 1;
                     break;
+
                 case 3:
-                    //Start Listing Activity
-                    Console.Clear();
-                    ListingActivity listing = new ListingActivity("Listing", 0);
-                    listing.GetActivityName();
-                    listing.GetActivityDescription();
-                    seconds = listing.GetActivityTime();
-                    listing.GetReady();
-                    listing.ReturnPrompt(seconds);
-                    listing.GetDone();
+                    option = "Listing Activity";
+                    description = "This activity will help you reflect on the good things in your life bt having you list as many thing as you can in certain areas.";
+                    Console.WriteLine();
+                    Listing l1 = new Listing(option, description);
+                    l1.GetIntroPrompt();
+                    l1.GetQuestion();
+                    l1.GetClosingMessage();
+                    _nListing +=1;
                     break;
-                case 4:
-                    // Quite
-                    Console.WriteLine("\nThank you for using the Mindfulness Program!\n");
-                    break;
+
                 default:
-                    Console.WriteLine($"\nSorry the option you entered is not valid.");
                     break;
             }
         }
-
+        A1.History(_nBreathing, _nReflecting, _nListing);
 
     }
-
 }
