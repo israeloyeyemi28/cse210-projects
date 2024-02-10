@@ -39,6 +39,7 @@ class Program
                     r1.GetPrompt();
                     r1.GetQuestion();
                     r1.GetClosingMessage();
+
                     _nReflecting += 1;
                     break;
 
